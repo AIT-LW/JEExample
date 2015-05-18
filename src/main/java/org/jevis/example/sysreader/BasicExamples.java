@@ -48,7 +48,7 @@ import org.joda.time.DateTime;
 public class BasicExamples {
 
     /**
-     * The JEVisDataSource is the centrail class handeling the connection to the
+     * The JEVisDataSource is the central class handling the connection to the
      * JEVis Server
      */
     private JEVisDataSource jevis;
@@ -56,9 +56,9 @@ public class BasicExamples {
     /**
      * Create an new SystemReader an connect to the JEVis Server.
      *
-     * TODO: implement an neutral JEVisDataSource constructor wich can work with
-     * JEAPI-SQl and JEAPI-WS and other implementaions. This will be part of the
-     * JECommons libary.
+     * TODO: implement an neutral JEVisDataSource constructor which can work with
+     * JEAPI-SQl and JEAPI-WS and other implementations. This will be part of the
+     * JECommons library.
      *
      * @param sqlServer Address of the MySQL Server
      * @param port Port of the MySQL Server, Default is 3306
@@ -71,11 +71,14 @@ public class BasicExamples {
     public BasicExamples(String sqlServer, String port, String sqlSchema, String sqlUser, String sqlPW, String jevisUser, String jevisPW) {
 
         try {
-            //Create an new JEVisDataSource from the MySQL implementation JEAPI-SQl. This connection needs an vaild user on the MySQl Server.
-            //Laster it will also be possible to use the JEAPI-WS an by this using the JEVis webservice(REST) as an endpoint which is much saver the SQL.
+            //Create an new JEVisDataSource from the MySQL implementation 
+            //JEAPI-SQl. This connection needs an vaild user on the MySQl Server.
+            //Later it will also be possible to use the JEAPI-WS and by this 
+            //using the JEVis webservice (REST) as an endpoint which is much
+            //saver than using a public SQL-port.
             jevis = new JEVisDataSourceSQL(sqlServer, port, sqlSchema, sqlUser, sqlPW);
 
-            //authenticate the JEVis user.
+            //authentificate the JEVis user.
             if (jevis.connect(jevisUser, jevisPW)) {
                 Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "Connection was successful");
             } else {
@@ -84,7 +87,7 @@ public class BasicExamples {
             }
 
         } catch (JEVisException ex) {
-            Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, "There was an error while connection the JEVis Server");
+            Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, "There was an error while connecting to the JEVis Server");
             Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(1);
         }
@@ -92,24 +95,26 @@ public class BasicExamples {
     }
 
     /**
-     * Write the current used diskspace into the JEVis System.
+     * Write the current used disk-space into the JEVis System.
      *
-     * TODO: Add an example for the exeption hanling like an lost connection
+     * TODO: Add an example for the exception handling of a lost connection
      *
-     * TODO: Check the expected type(Int,Double,String...) of value for an
-     * attribute. The API will thow an waring if the types does not match
+     * TODO: Check the expected type(Integer,Double,String...) of the value of an
+     * attribute. The API will throw a warning if the types do not match.
      *
-     * TODO: make an example with an JEVisSample with unit.
+     * TODO: make an example with a JEVisSample with unit.
      *
      * @param objectID unique ID of the JEVisObject on the Server.
-     * @param attributeName uniqe name of the Attribute under this Object
+     * @param attributeName unique name of the Attribute under this Object
      */
     public void writeToJEVis(long objectID, String attributeName) {
         try {
-            //Check if the connection is still alive. An JEVisException will be thrown if you use one of the functions and the connection is lost
+            //Check if the connection is still alive. An JEVisException will be
+            //thrown if you use one of the functions and the connection is lost
             if (jevis.isConnectionAlive()) {
 
-                //Get the JEVisOBject with the given ID. You can get the uniqe ID with the help of the JEConfig.
+                //Get the JEVisObject with the given ID. You can get the uniqe
+                //ID with the help of JEConfig.
                 if (jevis.getObject(objectID) != null) {
                     JEVisObject myObject = jevis.getObject(objectID);
                     Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "JEVisObject: " + myObject);
@@ -119,16 +124,16 @@ public class BasicExamples {
                         JEVisAttribute attribute = myObject.getAttribute(attributeName);
                         Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "JEVisAttribute: " + attribute);
 
-                        //This are our sample (measured data)
+                        //This is our sample (measured data)
                         long totalSpaceUsed = getUsedSpace();
                         DateTime timestamp = DateTime.now();
 
-                        //Now we let the Attribute create an JEVisSample,an JEVisSample allways need an Timestamp and an value.
+                        //Now we let the Attribute creates an JEVisSample,an JEVisSample allways need an Timestamp and an value.
                         JEVisSample newSample = attribute.buildSample(timestamp, totalSpaceUsed, "This is an note, imported via SysReader");
-                        //Until now we createt the sample only localy we have to commit it to the JEVis Server.
+                        //Until now we created the sample only localy and we have to commit it to the JEVis Server.
                         newSample.commit();
 
-                        //TODO: we need an example for attribute.addSamples(listOfSamples); funcktion. This function allows to commit a bunch of sample at once
+                        //TODO: we need an example for attribute.addSamples(listOfSamples); function. This function allows to commit a bunch of sample at once
                     } else {
                         Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, "Could not found the Attribute with the name:" + attributeName);
                     }
@@ -138,7 +143,7 @@ public class BasicExamples {
             } else {
                 Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, "Connection to the JEVisServer is not alive");
                 //TODO: the programm could now retry to connect,
-                //We dont have to the the isConnectionAlive() but use the JEVisException to handel this problem.
+                //We dont have to do the isConnectionAlive() but use the JEVisException to handle this problem.
             }
         } catch (JEVisException ex) {
             Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, null, ex);
@@ -147,21 +152,22 @@ public class BasicExamples {
     }
 
     /**
-     * Print all accassable(userrights) JEVisObjects and there JEVisAttributes
+     * Print all (for the user) accessible JEVisObjects and their JEVisAttributes
      * which are from the given JEVisClass or an heir.
      *
      * @param jevisClass
      */
     public void printObjects(String jevisClass) {
         try {
-            //Check if the connection is still alive. An JEVisException will be thrown if you use one of the functions and the connection is lost
+            //Check if the connection is still alive. An JEVisException will be
+            //thrown if you use one of the functions and the connection is lost
             if (jevis.isConnectionAlive()) {
 
                 //Get the JEVisClass from the server
                 if (jevis.getJEVisClass(jevisClass) != null) {
                     JEVisClass myClass = jevis.getJEVisClass(jevisClass);
 
-                    //Get all JEVisObjects from the JEVisClass and all the inheret this class if the user has the userrights for them
+                    //Get all JEVisObjects from the JEVisClass and all the inherit this class if the user has the userrights for them
                     List<JEVisObject> allObjects = jevis.getObjects(myClass, true);
 
                     for (JEVisObject myObject : allObjects) {
@@ -205,10 +211,13 @@ public class BasicExamples {
 
                     //Print the unique name of this JEVisClass
                     Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "Name: " + myClass.getName());
-                    //Print if the JEVisClass unique status, if an class is unique its forbidden to create more than one object with this class under the same parent.
+                    //Print the JEVisClass unique status, if an class is unique 
+                    //it is forbidden to create more than one object with this
+                    //class under the same parent.
                     Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "isUnique: " + myClass.isUnique());
 
-                    //Print all valid parent classes. This will be used to check if an JEVisObject can be created under an other JEVisObject.
+                    //Print all valid parent classes. This will be used to check
+                    //if a JEVisObject can be created under another JEVisObject.
                     //This class can only be created under object from the following classes
                     Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "Valid Parents:");
                     for (JEVisClass allowedParents : myClass.getValidParents()) {
@@ -216,14 +225,18 @@ public class BasicExamples {
                         Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "Name: " + allowedParents.getName());
                     }
 
-                    //Print all JEVisTypes this JEVisClass has. An type is the rule which attributes an JEVisObject from this class has.
+                    //Print all JEVisTypes this JEVisClass has. A type is the
+                    //rule which attributes a JEVisObject from this class has.
                     Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "Types:");
                     for (JEVisType type : myClass.getTypes()) {
                         Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "  Name: " + type.getName());
-                        //The PrimitiveType tells the JEVis System what kind of values it expect (Int, Double,String etc..) SEE  JEVisConstants.PrimitiveType.*
+                        //The PrimitiveType tells the JEVis System what kind of
+                        //value is expected (Int, Double,String etc..) SEE  JEVisConstants.PrimitiveType.*
                         Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "  Type: " + type.getPrimitiveType());
                         Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "  Discription: " + type.getDescription());
-                        //The if the Unit is not null the System expects the value in this unit, the sample will try to convert the input unit into this unit
+                        //If the Unit is not null the System expects a value
+                        //in this unit, the sample will try to convert the input
+                        //unit into this unit
                         Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "  Unit: " + type.getUnit());
                     }
 
@@ -250,32 +263,33 @@ public class BasicExamples {
      */
     public void createObject(long parentObjectID, String newObjectClass, String newObjectName) {
         try {
-            //Check if the connection is still alive. An JEVisException will be thrown if you use one of the functions and the connection is lost
+            //Check if the connection is still alive. An JEVisException will be
+            //thrown if you use one of the functions and the connection is lost
             if (jevis.isConnectionAlive()) {
 
-                //get the ParentObject from the JEVis system
+                //Get the ParentObject from the JEVis system
                 if (jevis.getObject(parentObjectID) != null) {
 
                     JEVisObject parentObject = jevis.getObject(parentObjectID);
                     JEVisClass parentClass = parentObject.getJEVisClass();
 
-                    //Get the JEVisClass we want our new JEVisObject have to
+                    //Get the JEVisClass we want our new JEVisObject to have
                     if (jevis.getJEVisClass(newObjectName) != null) {
                         JEVisClass newClass = jevis.getJEVisClass(newObjectName);
 
-                        //Check if the JEVisObject with this class is allowed under an parent of the other Class
-                        //it will also check if the JEVisClass is unique and if an other object of the Class exist.
+                        //Check if the JEVisObject with this class is allowed under a parent of the other Class
+                        //it will also check if the JEVisClass is unique and if another object of the Class exist.
                         if (newClass.isAllowedUnder(parentClass)) {
                             JEVisObject newObject = parentObject.buildObject(newObjectName, newClass);
                             newObject.commit();
                             Logger.getLogger(BasicExamples.class.getName()).log(Level.INFO, "New ID: " + newObject.getID());
                         } else {
-                            Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, "Cannot create Object because the parrent JEVisClass does not allow the child");
+                            Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, "Cannot create Object because the parent JEVisClass does not allow the child");
                         }
                     }
 
                 } else {
-                    Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, "Cannot create Object because the parrent is not accessable");
+                    Logger.getLogger(BasicExamples.class.getName()).log(Level.SEVERE, "Cannot create Object because the parent is not accessible");
                 }
 
             } else {
@@ -288,10 +302,10 @@ public class BasicExamples {
     }
 
     /**
-     * Read all free disk space of the locale machine. This function is only an
-     * simple source od data and has not much to do with the JEVis himself.
+     * Read all free disk space of the locale machine. This function is only a
+     * simple source of data and has not much to do with the JEVis himself.
      *
-     * @return toal used space
+     * @return total used space
      * @throws IOException
      */
     private long getUsedSpace() {
