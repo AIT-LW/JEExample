@@ -23,21 +23,21 @@ package org.jevis.example.sysreader;
 import org.jevis.api.JEVisException;
 
 /**
- * Main class of this Example. This example implements some common task with the
+ * Main class of this Example. This example implements some common tasks with the
  * JEVis System to help new developers to use the JEAPI.
  *
- * This is am Maven Project and needs the local dependencies of
+ * This is a Maven Project and needs the local dependencies of
  * JEAPI-SQL(JEAPI,JECommons)
  *
- * TODO: implement the maven dependencies from our buildserver
+ * TODO: implement the Maven dependencies from our buildserver
  *
- * TODO: example of chaning existing Objects,Classes,Samples
+ * TODO: example of changing existing Objects,Classes,Samples
  *
- * TODO: example of deleteing Objects, Classes, Samples
+ * TODO: example of deleting Objects, Classes, Samples
  *
- * TODO: example of an typical workflow for GUI and services.
+ * TODO: example of a typical workflow for GUI and services.
  *
- * TODO: exanmple of navigatin in within the JEVisOBject tree.
+ * TODO: example of navigation within the JEVisOBject tree.
  *
  * @author Florian Simon <florian.simon@envidatec.com>
  */
@@ -53,19 +53,27 @@ public class Main {
      * @throws JEVisException
      */
     public static void main(String[] args) throws JEVisException {
-        //create an new Example, this example has hardcodet connection settings. Change this setting to your server configuration
+        //create an new Example, this example has hardcodet connection settings.
+        //Change these settings to your server configuration
         BasicExamples example = new BasicExamples("openjevis.org", "13306", "jevis", "jevis", "jevistest", "myUser", "myPW");
 
-        //Example which print all Object which are from the JEVisClass you give by its name(in this case "Data")
+        //Example which prints all Objects which are from the JEVisClass
+        //given by its name (in this case "Data")
         example.printObjects("Data");
 
-        //Example which print some information about the given JEVisClass(in this case "Email Plugin")
+        //Example which prints some information about the given JEVisClass
+        //(in this case "Email Plugin")
         example.printClass("Email Plugin");
 
-        //Example of writing new values to the JEVis system. The parameters are ths unique id of the object and its JEVisAttribute name where the data should be stored
+        //Example of writing new values to the JEVis system. The parameters are
+        //the unique id of the object and its JEVisAttribute name where the data
+        //should be stored
         example.writeToJEVis(1588l, "Value");
 
-        //Example of creating an new JEVisObject in the JEVis System. 1587 is the parent Object, Data is the JEVisClass of the new Object, "My new Data Object" is the name
+        //Example of creating an new JEVisObject in the JEVis System.
+        // - 1587 is the parent Object,
+        // - "Data" is the JEVisClass of the new Object,
+        // - "My new Data Object" is the name
         example.createObject(1587l, "Data", "My new Data Object");
 
     }
