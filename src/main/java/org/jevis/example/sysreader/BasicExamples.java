@@ -274,9 +274,8 @@ public class BasicExamples {
                     JEVisClass parentClass = parentObject.getJEVisClass();
 
                     //Get the JEVisClass we want our new JEVisObject to have
-                    if (jevis.getJEVisClass(newObjectName) != null) {
-                        JEVisClass newClass = jevis.getJEVisClass(newObjectName);
-
+                    JEVisClass newClass = jevis.getJEVisClass(newObjectClass);
+                    if (newClass != null) {
                         //Check if the JEVisObject with this class is allowed under a parent of the other Class
                         //it will also check if the JEVisClass is unique and if another object of the Class exist.
                         if (newClass.isAllowedUnder(parentClass)) {
